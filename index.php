@@ -28,6 +28,13 @@ if (isset($_GET['logout'])) {
     header("Location: index.php");
     exit;
 }
+
+// Persist product flag in session
+if (isset($_GET['category']) && $_GET['category'] === 'flags') {
+    $_SESSION['product_flag'] = "FLAG{product_category_sqli}";
+    header("Location: index.php"); // Prevent showing the products page again
+    exit;
+}
 ?>
 
 <!DOCTYPE html>
@@ -40,7 +47,6 @@ if (isset($_GET['logout'])) {
 
 <body>
     <h1 class="<?php echo isset($_SESSION['loggedin']) ? 'hidden' : ''; ?>">Bug Bounty Challenge</h1>
-
 
     <?php if (!isset($_SESSION['loggedin'])): ?>
         <!-- Admin Login Form -->
@@ -60,26 +66,22 @@ if (isset($_GET['logout'])) {
 
         <?php if (isset($_SESSION['loggedin'])): ?>
             <p class="admin-login-flag"><strong><?php echo htmlspecialchars($_SESSION['flag']); ?></strong></p>
+
+            <?php if (isset($_SESSION['product_flag'])): ?>
+                <p class="product-flag"><strong><?php echo $_SESSION['product_flag']; ?></strong></p>
+            <?php endif; ?>
         <?php endif; ?>
 
-        <?php if (!isset($_GET['xss'])): ?>
+        <?php if (!isset($_SESSION['product_flag'])): ?>
             <h3>Product Search</h3>
             <form method="GET">
                 <input type="text" name="search" placeholder="Search products"><br>
                 <select name="category">
-                    <option value="Electronics" <?php if (isset($_GET['category']) && $_GET['category'] == 'Electronics')
-                        echo 'selected'; ?>>Electronics</option>
-                    <option value="Books" <?php if (isset($_GET['category']) && $_GET['category'] == 'Books')
-                        echo 'selected'; ?>>
-                        Books</option>
-                    <option value="Toys" <?php if (isset($_GET['category']) && $_GET['category'] == 'Toys')
-                        echo 'selected'; ?>>
-                        Toys</option>
-                    <option value="Kitchen" <?php if (isset($_GET['category']) && $_GET['category'] == 'Kitchen')
-                        echo 'selected'; ?>>Kitchen</option>
-                    <option value="Tools" <?php if (isset($_GET['category']) && $_GET['category'] == 'Tools')
-                        echo 'selected'; ?>>
-                        Tools</option>
+                    <option value="Electronics">Electronics</option>
+                    <option value="Books">Books</option>
+                    <option value="Toys">Toys</option>
+                    <option value="Kitchen">Kitchen</option>
+                    <option value="Tools">Tools</option>
                 </select>
                 <input type="submit" value="Search">
             </form>
@@ -87,7 +89,7 @@ if (isset($_GET['logout'])) {
 
         <?php
         // Product Listing with Vulnerability in Category Filter
-        if (isset($_GET['category'])) {
+        if (isset($_GET['category']) && !isset($_SESSION['product_flag'])) {
             $category = $_GET['category'];
 
             // Intentional SQL Injection Vulnerability
@@ -109,28 +111,18 @@ if (isset($_GET['logout'])) {
             }
         }
 
-        // Check if the user has captured the second flag (SQLi)
-        if (isset($_GET['category']) && $_GET['category'] == 'flags') {
-            // echo "<p><strong>FLAG{product_category_sqli}</strong></p>";
-            echo "<p>Nice work! You found the second flag via SQL Injection.</p>";
-            echo "<a class='continue' href='index.php?flag2_found=true&xss=true'>Continue to next challenge →</a>";
-        }
-
-        // -----------------------------------
-// ✅ Stage 2: Unlock the XSS Vulnerability
-// -----------------------------------    
-        if (isset($_GET['flag2_found'])) {
+        // Unlock the XSS Vulnerability after finding the product flag
+        if (isset($_SESSION['product_flag'])) {
             echo "<h3>Comments Section</h3>";
             echo '<form onsubmit="addComment(event)">
-            <textarea id="comment-input" placeholder="Leave a comment" rows="4" cols="50"></textarea><br>
-            <input type="submit" value="Post Comment">
+                <textarea id="comment-input" placeholder="Leave a comment" rows="4" cols="50"></textarea><br>
+                <input type="submit" value="Post Comment">
             </form>';
 
             echo "<h4>Previous Comments:</h4>";
             echo '<div class="comment-box" id="comment-box"></div>';
         }
         ?>
-
     <?php endif; ?>
 
     <script>
