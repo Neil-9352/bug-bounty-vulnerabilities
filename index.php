@@ -59,7 +59,7 @@ if (isset($_GET['logout'])) {
         </div>
 
         <?php if (isset($_SESSION['loggedin'])): ?>
-            <div class="admin-login-flag">Flag: <strong><?php echo htmlspecialchars($_SESSION['flag']); ?></strong></div>
+            <p class="admin-login-flag"><strong><?php echo htmlspecialchars($_SESSION['flag']); ?></strong></p>
         <?php endif; ?>
 
         <?php if (!isset($_GET['xss'])): ?>
@@ -121,41 +121,38 @@ if (isset($_GET['logout'])) {
 // -----------------------------------    
         if (isset($_GET['flag2_found'])) {
             echo "<h3>Comments Section</h3>";
-            echo '<form method="POST">
-        <textarea name="comment" placeholder="Leave a comment" rows="4" cols="50"></textarea><br>
-        <input type="submit" value="Post Comment">
-    </form>';
+            echo '<form onsubmit="addComment(event)">
+            <textarea id="comment-input" placeholder="Leave a comment" rows="4" cols="50"></textarea><br>
+            <input type="submit" value="Post Comment">
+            </form>';
 
             echo "<h4>Previous Comments:</h4>";
-            echo '<div class="comment-box">';
-
-            // Handle comment submission
-            if ($_SERVER["REQUEST_METHOD"] == "POST" && !empty($_POST['comment'])) {
-                $comment = $_POST['comment'];
-
-                // 💣 INTENTIONALLY VULNERABLE TO XSS
-                $stmt = $conn->prepare("INSERT INTO comments (content) VALUES (?)");
-                $stmt->bind_param("s", $comment);
-                $stmt->execute();
-            }
-
-            // Display comments
-            $result = $conn->query("SELECT * FROM comments ORDER BY id DESC");
-
-            while ($row = $result->fetch_assoc()) {
-                echo "<p>" . $row['content'] . "</p>";
-
-                // 💥 Automatically show the flag if alert() executes
-                if (strpos($row['content'], 'alert(') !== false) {
-                    echo "<script>document.body.innerHTML += '<p><strong>FLAG{xss_vulnerability_found}</strong></p>';</script>";
-                }
-            }
-
-            echo '</div>'; // Close .comment-box
+            echo '<div class="comment-box" id="comment-box"></div>';
         }
         ?>
 
     <?php endif; ?>
+
+    <script>
+        // ✅ Handle adding comments (client-side only)
+        function addComment(event) {
+            event.preventDefault();
+            const input = document.getElementById('comment-input');
+            const commentBox = document.getElementById('comment-box');
+
+            if (input.value.trim() !== '') {
+                // ✅ Directly inject the comment without sanitizing (intentionally vulnerable)
+                commentBox.innerHTML += '<p>' + input.value + '</p>';
+
+                // ✅ Trigger XSS if script is injected
+                if (input.value.includes('<script>')) {
+                    document.body.innerHTML += '<p><strong>FLAG{xss_vulnerability_found}</strong></p>';
+                }
+
+                input.value = '';
+            }
+        }
+    </script>
 </body>
 
 </html>
