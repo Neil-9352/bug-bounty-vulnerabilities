@@ -1,7 +1,7 @@
 <?php
 $host = "localhost"; // Use the Docker service name
 $user = "root";
-$pass = "root";
+$pass = "";
 $db = "bugbounty";
 
 // Connect to MySQL
