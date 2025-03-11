@@ -197,7 +197,7 @@ h3 {
 
 .comment-box {
     width: 420px;
-    max-height: 300px;
+    max-height: 58px;
     overflow-y: auto;
     border: 1px solid #ccc;
     padding: 10px;
