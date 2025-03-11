@@ -1,5 +1,5 @@
 <?php
-$host = "localhost"; // Use the Docker service name
+$host = "127.0.0.1"; // Use the Docker service name
 $user = "root";
 $pass = "";
 $db = "bugbounty";
