@@ -11,10 +11,9 @@ mysqld_safe --datadir=/var/lib/mysql &
 # Wait for MySQL to fully start
 sleep 10
 
-# Create the database and user if not exists
-mysql -u root -e "CREATE DATABASE IF NOT EXISTS bugbounty;"
-mysql -u root -e "ALTER USER 'root'@'localhost' IDENTIFIED BY 'root';"
-mysql -u root -e "GRANT ALL PRIVILEGES ON bugbounty.* TO 'root'@'localhost';"
+# Ensure MySQL root user has no password
+mysql -e "ALTER USER 'root'@'localhost' IDENTIFIED BY '';"
+mysql -e "CREATE DATABASE IF NOT EXISTS bugbounty;"
 
-# Start Apache server (foreground)
+# Start Apache server in the foreground
 apache2-foreground
