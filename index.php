@@ -113,7 +113,7 @@ if (isset($_GET['category']) && $_GET['category'] === 'flags') {
 
         // Unlock the XSS Vulnerability after finding the product flag
         if (isset($_SESSION['product_flag'])) {
-            echo "<h3>Comments Section</h3>";
+            echo "<h3>The Journey is Over... Or is it?</h3>";
             echo '<form onsubmit="addComment(event)">
                 <textarea id="comment-input" placeholder="Leave a comment" rows="4" cols="50"></textarea><br>
                 <input type="submit" value="Post Comment">
