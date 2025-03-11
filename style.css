@@ -1,0 +1,235 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Header */
+h1 {
+    color: #333;
+    margin-bottom: 20px;
+}
+
+/* Centering the form */
+form {
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    width: 400px;
+    padding: 20px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+form h3 {
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+/* Input fields */
+input[type="text"],
+input[type="password"],
+select {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+    outline: none;
+}
+
+input[type="text"]:focus,
+input[type="password"]:focus,
+select:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 8px rgba(0, 123, 255, 0.2);
+}
+
+/* Submit Button */
+input[type="submit"] {
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    padding: 10px;
+    font-size: 16px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+input[type="submit"]:hover {
+    background-color: #0056b3;
+}
+
+/* Products Section */
+.product-list {
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 20px;
+    width: 500px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+/* Product Item */
+.product-list div {
+    padding: 10px;
+    border-bottom: 1px solid #eee;
+}
+
+.product-list div:last-child {
+    border-bottom: none;
+}
+
+/* Flag Section */
+p {
+    text-align: center;
+    font-size: 16px;
+    color: #666;
+}
+
+/* Highlight the flag */
+p strong {
+    background-color: #ffeb3b;
+    padding: 5px 10px;
+    border-radius: 3px;
+    font-size: 18px;
+    color: #000;
+    font-family: monospace;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Logout Link */
+.logout-button {
+    text-align: center;
+    margin-top: 20px;
+    color: white;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+/* Center the product search form */
+form[method="GET"] {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+/* Slight Margin */
+form[method="GET"] select {
+    width: 100%;
+}
+
+/* Center the entire layout */
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+}
+
+/* Add a bit of space when products are loaded */
+h3 {
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+/* Surprise entry text */
+.product-list div:last-child {
+    color: #d9534f;
+    font-weight: bold;
+}
+
+.hidden {
+    display: none;
+}
+
+.navbar {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    background-color: #007bff;
+    color: white;
+    padding: 15px 20px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    width: 100%;
+    position: absolute;
+    top: 0;
+}
+
+.navbar .flag strong {
+    font-weight: bold;
+    color: #fff;
+}
+
+.navbar .logout a {
+    text-decoration: none;
+    color: #fff;
+    background-color: #dc3545;
+    padding: 10px 15px;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+}
+
+.navbar .logout a:hover {
+    background-color: #c82333;
+}
+
+.welcome {
+    text-align: center;
+    font-size: 20px;
+    margin-bottom: 20px;
+}
+
+.comment-box {
+    width: 420px;
+    max-height: 300px;
+    overflow-y: auto;
+    border: 1px solid #ccc;
+    padding: 10px;
+    background-color: #f9f9f9;
+    border-radius: 5px;
+}
+
+.comment-box p {
+    /* background-color: #fff; */
+    padding: 8px;
+    /* border-bottom: 1px solid #e0e0e0; */
+    border-radius: 3px;
+    margin: 5px 0;
+    word-wrap: break-word;
+}
+
+.continue {
+    text-align: center;
+    margin-top: 20px;
+    color: blue;
+    text-decoration: none;
+}
+
+.admin-login-flag {
+    position: absolute;
+    top: 4rem;
+}
+
+/* Prevent excessive width */
+@media (max-width: 500px) {
+    form,
+    .product-list {
+        width: 90%;
+    }
+}

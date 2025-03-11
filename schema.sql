@@ -1,0 +1,10 @@
+CREATE DATABASE IF NOT EXISTS bugbounty;
+USE bugbounty;
+
+DROP TABLE IF EXISTS comments;
+
+CREATE TABLE comments (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    content TEXT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
