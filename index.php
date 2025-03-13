@@ -59,6 +59,8 @@ if (isset($_GET['category']) && $_GET['category'] === 'flags') {
     <?php else: ?>
         <div class="navbar">
             <div class="nav-item">Welcome, Admin!</div>
+            <div class="nav-item challenge-info">There are hidden flags here. Can you find all of them?
+            </div>
             <div class="nav-item">
                 <a class="logout-button" href="index.php?logout=true">Logout</a>
             </div>
@@ -75,75 +77,158 @@ if (isset($_GET['category']) && $_GET['category'] === 'flags') {
         <?php if (!isset($_SESSION['product_flag'])): ?>
             <h3>Product Search</h3>
             <form method="GET">
-                <input type="text" name="search" placeholder="Search products"><br>
+                <input type="text" name="search" placeholder="Search products"
+                    value="<?php echo isset($_GET['search']) ? htmlspecialchars($_GET['search']) : ''; ?>"><br>
+
                 <select name="category">
-                    <option value="Electronics">Electronics</option>
-                    <option value="Books">Books</option>
-                    <option value="Toys">Toys</option>
-                    <option value="Kitchen">Kitchen</option>
-                    <option value="Tools">Tools</option>
+                    <?php
+                    $categories = ["Electronics", "Books", "Toys", "Kitchen", "Tools"];
+                    $selected_category = isset($_GET['category']) ? $_GET['category'] : '';
+
+                    foreach ($categories as $category) {
+                        $selected = ($category == $selected_category) ? 'selected' : '';
+                        echo "<option value=\"$category\" $selected>$category</option>";
+                    }
+                    ?>
                 </select>
+
                 <input type="submit" value="Search">
             </form>
+
         <?php endif; ?>
 
         <?php
         // Product Listing with Vulnerability in Category Filter
         if (isset($_GET['category']) && !isset($_SESSION['product_flag'])) {
             $category = $_GET['category'];
+            $search = isset($_GET['search']) ? $_GET['search'] : '';
 
             // Intentional SQL Injection Vulnerability
-            $query = "SELECT * FROM products WHERE category='$category' ORDER BY id DESC LIMIT 6";
+            $query = "SELECT * FROM products WHERE name LIKE '%$search%' AND category='$category' ORDER BY id DESC LIMIT 6";
             $result = $conn->query($query);
 
+            echo '<div id="product-list">';
+
+            // if ($result) {
+            //     echo "<h3>Products in category: " . htmlspecialchars($category) . "</h3>";
+            //     $count = 0;
+            //     while ($row = $result->fetch_assoc()) {
+            //         if (++$count <= 5) {
+            //             echo htmlspecialchars($row['name']) . "<br>";
+            //         } else {
+            //             echo "Surprise Entry: " . htmlspecialchars($row['name']) . "<br>";
+            //         }
+    
+            //         // ✅ Check if the hidden product flag is found
+            //         if ($row['name'] === 'FLAG{product_category_sqli}') {
+            //             $_SESSION['product_flag'] = true;
+            //             header("Location: " . $_SERVER['PHP_SELF']); // Refresh the page
+            //             exit;
+            //         }
+            //     }
+            // } else {
+            //     echo "No products found.";
+            // }
+    
             if ($result) {
                 echo "<h3>Products in category: " . htmlspecialchars($category) . "</h3>";
-                $count = 0;
+                echo '<div class="product-container">';
+
+                $products = [];
                 while ($row = $result->fetch_assoc()) {
-                    if (++$count <= 5) {
-                        echo htmlspecialchars($row['name']) . "<br>";
+                    $products[] = $row;
+                }
+
+                // Select a random product as the surprise item
+                if (!empty($products)) {
+                    $surpriseIndex = array_rand($products);
+                }
+
+                foreach ($products as $index => $product) {
+                    if ($index == $surpriseIndex) {
+                        echo "<div class='product-item surprise-item'>
+                                <strong>SALE 30% OFF<br></strong><br>" . htmlspecialchars($product['name']) . "
+                              </div>";
                     } else {
-                        echo "Surprise Entry: " . htmlspecialchars($row['name']) . "<br>";
+                        echo "<div class='product-item'>" . htmlspecialchars($product['name']) . "</div>";
+                    }
+
+                    // ✅ Check if the hidden product flag is found
+                    if ($product['name'] === 'FLAG{product_category_sqli}') {
+                        $_SESSION['product_flag'] = true;
+                        header("Location: " . $_SERVER['PHP_SELF']); // Refresh the page
+                        exit;
                     }
                 }
+
+                echo '</div>'; // Close product-container
             } else {
                 echo "No products found.";
             }
+
+
+
+            // ✅ Show "Continue" button only if flag is found
+            if (isset($_SESSION['product_flag'])) {
+                echo '<br><a href="?continue=true" id="continue-btn">Continue to the next challenge</a>';
+            }
+            echo '</div>';
         }
 
-        // Unlock the XSS Vulnerability after finding the product flag
+        // ✅ Automatically unlock comment section once the second flag is found
         if (isset($_SESSION['product_flag'])) {
-            echo "<h3>The Journey is Over... Or is it?</h3>";
-            echo '<form onsubmit="addComment(event)">
-                <textarea id="comment-input" placeholder="Leave a comment" rows="4" cols="50"></textarea><br>
-                <input type="submit" value="Post Comment">
-            </form>';
-
-            echo "<h4>Previous Comments:</h4>";
-            echo '<div class="comment-box" id="comment-box"></div>';
+            $_SESSION['show_comment_section'] = true;
         }
+
+
+        // ✅ Unlock the XSS Vulnerability only after progressing
+        if (isset($_SESSION['show_comment_section'])) {
+            echo '<div id="comment-section">';
+            echo "<h3>The Journey is Over... Or is it?</h3>";
+
+            // Comment Form (Always at the top)
+            echo '<form onsubmit="addComment(event)">
+    <textarea id="comment-input" placeholder="Leave a comment" rows="4" cols="50"></textarea><br>
+    <input type="submit" value="Post Comment">
+</form>';
+
+            // Comment Box (Below the form)
+            echo "<h4>Previous Comments:</h4>";
+            echo '<div class="comment-box" id="comment-box">';
+            echo '</div>';
+
+            echo '</div>';
+
+        }
+
         ?>
     <?php endif; ?>
 
     <script>
-        // ✅ Handle adding comments (client-side only)
+        // ✅ Handle adding comments (intentionally vulnerable to XSS)
         function addComment(event) {
             event.preventDefault();
             const input = document.getElementById('comment-input');
             const commentBox = document.getElementById('comment-box');
 
             if (input.value.trim() !== '') {
-                // ✅ Directly inject the comment without sanitizing (intentionally vulnerable)
-                commentBox.innerHTML += '<p>' + input.value + '</p>';
+                commentBox.insertAdjacentHTML('beforeend', '<p>' + input.value + '</p>');
 
-                // ✅ Trigger XSS if script is injected
-                if (input.value.includes('<script>')) {
-                    document.body.innerHTML += '<p><strong>FLAG{xss_vulnerability_found}</strong></p>';
+                // Extract & execute script tags manually
+                const scripts = commentBox.getElementsByTagName("script");
+                for (let script of scripts) {
+                    eval(script.innerText); // Execute JavaScript manually
                 }
 
-                input.value = '';
+                // Trigger flag if script detected
+                if (input.value.includes('<script>')) {
+                    document.body.insertAdjacentHTML('beforeend', '<p><strong>FLAG{xss_vulnerability_found}</strong></p>');
+                }
+
+                input.value = ''; // Clear input
             }
         }
+
     </script>
 </body>
 

@@ -1,7 +1,7 @@
 <?php
 $host = "127.0.0.1"; // Use the Docker service name
 $user = "root";
-$pass = "";
+$pass = "root";
 $db = "bugbounty";
 
 // Connect to MySQL
@@ -57,6 +57,7 @@ $conn->query("INSERT IGNORE INTO products (name, category) VALUES
     ('Samsung Galaxy S23', 'Electronics'),
     ('Sony WH-1000XM5', 'Electronics'),
     ('GoPro Hero 11', 'Electronics'),
+    ('Nintendo Switch OLED', 'Electronics'),  -- Added item
 
     -- Books
     ('The Alchemist by Paulo Coelho', 'Books'),
@@ -64,6 +65,7 @@ $conn->query("INSERT IGNORE INTO products (name, category) VALUES
     ('Sapiens: A Brief History of Humankind', 'Books'),
     ('Atomic Habits by James Clear', 'Books'),
     ('The Subtle Art of Not Giving a F*ck', 'Books'),
+    ('To Kill a Mockingbird by Harper Lee', 'Books'),  -- Added item
 
     -- Toys
     ('Lego Star Wars Millennium Falcon', 'Toys'),
@@ -71,6 +73,7 @@ $conn->query("INSERT IGNORE INTO products (name, category) VALUES
     ('Barbie Dreamhouse', 'Toys'),
     ('Rubik\'s Cube', 'Toys'),
     ('NERF Elite 2.0 Blaster', 'Toys'),
+    ('PlayStation 5 DualSense Controller', 'Toys'),  -- Added item
 
     -- Kitchen
     ('Philips Air Fryer', 'Kitchen'),
@@ -78,6 +81,7 @@ $conn->query("INSERT IGNORE INTO products (name, category) VALUES
     ('Borosil Glass Baking Dish', 'Kitchen'),
     ('Butterfly Rapid Pressure Cooker', 'Kitchen'),
     ('Hawkins Stainless Steel Tawa', 'Kitchen'),
+    ('Preethi Zodiac Mixer Grinder', 'Kitchen'),  -- Added item
 
     -- Tools
     ('Bosch Cordless Drill Machine', 'Tools'),
@@ -85,11 +89,9 @@ $conn->query("INSERT IGNORE INTO products (name, category) VALUES
     ('Black+Decker Electric Screwdriver', 'Tools'),
     ('Makita Angle Grinder', 'Tools'),
     ('Ingco Tool Set 100 Pieces', 'Tools'),
+    ('Dremel Rotary Tool Kit', 'Tools'),  -- Added item
 
     -- Hidden Flag disguised as a product in flags category
     ('FLAG{product_category_sqli}', 'flags')
 ");
-
-
-
 ?>
