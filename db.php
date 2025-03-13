@@ -42,7 +42,7 @@ $conn->query("
 // Insert admin user if not exists
 $conn->query("
     INSERT INTO users (username, password, flag) 
-    SELECT * FROM (SELECT 'admin', 'gvihocghiufchxcgjyilftxchgjhglfjcgm', 'FLAG{admin_login_bypass}') AS tmp
+    SELECT * FROM (SELECT 'admin', 'ftt87o6rdtrfuygkdtrfxjhcvgiy6ftu', 'FLAG{admin_login_bypass}') AS tmp
     WHERE NOT EXISTS (
         SELECT username FROM users WHERE username='admin'
     )
