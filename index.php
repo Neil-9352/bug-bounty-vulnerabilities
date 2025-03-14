@@ -41,8 +41,11 @@ if (isset($_GET['category']) && $_GET['category'] === 'flags') {
 <html>
 
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bug Bounty Challenge</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="icon" href="debugging.png" type="image/x-icon">
 </head>
 
 <body>
